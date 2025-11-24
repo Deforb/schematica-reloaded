@@ -2,7 +2,7 @@ import org.apache.commons.lang3.SystemUtils
 
 plugins {
     id("java")
-    id("gg.essential.loom") version "1.6.+"
+    id("gg.essential.loom") version "1.6.16"
     id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.gradleup.shadow") version ("8.3.3")
     id("net.kyori.blossom") version ("1.3.1")

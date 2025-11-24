@@ -178,6 +178,8 @@ public final class Names {
 
             public static final String SORT_PREFIX = "schematica.gui.material";
             public static final String DUMP = "schematica.gui.materialdump";
+            public static final String DUMP_SUCCESS = "schematica.gui.materialdump.success";
+            public static final String DUMP_FAIL = "schematica.gui.materialdump.fail";
         }
 
         public static final String X = "schematica.gui.x";

@@ -48,6 +48,8 @@ schematica.gui.materialamount=Amount
 schematica.gui.materialavailable=Available
 schematica.gui.materialmissing=Missing
 schematica.gui.materialdump=Save to file
+schematica.gui.materialdump.success=Material list dumped to: %s
+schematica.gui.materialdump.fail=Could not dump the material list!
 
 # gui - config - categories
 schematica.config.category.debug=Debug

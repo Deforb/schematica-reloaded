@@ -16,7 +16,9 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.fml.client.config.GuiUnicodeGlyphButton;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -132,12 +134,19 @@ public class GuiSchematicMaterials extends GuiScreenBase {
         }
 
         final File dumps = Schematica.proxy.getDirectory("dumps");
+        String fileName = Reference.MOD_ID + "-materials.txt";
+        if (ClientProxy.schematic != null && ClientProxy.schematic.name != null) {
+            fileName = Reference.MOD_ID + "-materials-" + FilenameUtils.removeExtension(ClientProxy.schematic.name) + ".txt";
+        }
+        final File dumpFile = new File(dumps, fileName);
         try {
-            try (FileOutputStream outputStream = new FileOutputStream(new File(dumps, Reference.MOD_ID + "-materials.txt"))) {
+            try (FileOutputStream outputStream = new FileOutputStream(dumpFile)) {
                 IOUtils.write(stringBuilder.toString(), outputStream, StandardCharsets.UTF_8);
             }
+            this.mc.thePlayer.addChatMessage(new ChatComponentText(I18n.format(Names.Gui.Control.DUMP_SUCCESS, dumpFile.getAbsolutePath())));
         } catch (final Exception e) {
             Reference.logger.error("Could not dump the material list!", e);
+            this.mc.thePlayer.addChatMessage(new ChatComponentText(I18n.format(Names.Gui.Control.DUMP_FAIL)));
         }
     }
 }

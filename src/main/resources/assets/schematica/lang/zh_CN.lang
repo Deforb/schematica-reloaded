@@ -30,6 +30,9 @@ schematica.gui.flip=对称
 schematica.gui.rotate=旋转
 schematica.gui.materialname=材料
 schematica.gui.materialamount=数量
+schematica.gui.materialdump=保存到文件
+schematica.gui.materialdump.success=材料列表已导出至：%s
+schematica.gui.materialdump.fail=无法导出材料列表！
 
 # gui - config - categories
 

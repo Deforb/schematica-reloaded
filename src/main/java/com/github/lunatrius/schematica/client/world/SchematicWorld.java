@@ -72,10 +72,12 @@ public class SchematicWorld extends WorldClient {
     public boolean isRendering = false;
     public LayerMode layerMode = LayerMode.ALL;
     public int renderingLayer = 0;
+    public final String name;
 
-    public SchematicWorld(final ISchematic schematic) {
+    public SchematicWorld(final ISchematic schematic, final String name) {
         super(null, WORLD_SETTINGS, 0, EnumDifficulty.PEACEFUL, Minecraft.getMinecraft().mcProfiler);
         this.schematic = schematic;
+        this.name = name;
 
         for (final TileEntity tileEntity : schematic.getTileEntities()) {
             initializeTileEntity(tileEntity);
