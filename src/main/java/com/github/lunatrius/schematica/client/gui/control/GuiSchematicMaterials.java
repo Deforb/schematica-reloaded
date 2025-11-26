@@ -130,6 +130,19 @@ public class GuiSchematicMaterials extends GuiScreenBase {
             formatter.format(formatName, wrappedItemStack.getItemStackDisplayName());
             stringBuilder.append(" ");
             formatter.format(formatSize, wrappedItemStack.total);
+
+            final int stackSize = wrappedItemStack.itemStack.getMaxStackSize();
+            if (stackSize > 1) {
+                final int stacks = wrappedItemStack.total / stackSize;
+                final int remainder = wrappedItemStack.total % stackSize;
+                if (stacks >= 1) {
+                    stringBuilder.append("=").append(stackSize).append("*").append(stacks);
+                    if (remainder > 0) {
+                        stringBuilder.append("+").append(remainder);
+                    }
+                }
+            }
+
             stringBuilder.append(System.lineSeparator());
         }
 
