@@ -7,6 +7,7 @@ import com.github.lunatrius.schematica.block.state.BlockStateHelper;
 import com.github.lunatrius.schematica.client.world.SchematicWorld;
 import com.github.lunatrius.schematica.reference.Reference;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,6 +40,10 @@ public class BlockList {
             final Block block = blockState.getBlock();
 
             if (block == Blocks.air || world.isAirBlock(pos)) {
+                continue;
+            }
+
+            if (block instanceof BlockDoor && blockState.getValue(BlockDoor.HALF) == BlockDoor.EnumDoorHalf.UPPER) {
                 continue;
             }
 
