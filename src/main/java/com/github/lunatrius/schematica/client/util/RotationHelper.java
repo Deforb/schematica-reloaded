@@ -8,6 +8,7 @@ import com.github.lunatrius.schematica.client.world.SchematicWorld;
 import com.github.lunatrius.schematica.reference.Reference;
 import com.github.lunatrius.schematica.world.storage.Schematic;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRailBase;
 import net.minecraft.block.BlockLever;
 import net.minecraft.block.BlockLog;
 import net.minecraft.block.BlockQuartz;
@@ -32,6 +33,7 @@ public class RotationHelper {
     private static final EnumFacing.Axis[][] AXISES = new EnumFacing.Axis[EnumFacing.Axis.values().length][];
     private static final BlockLog.EnumAxis[][] AXISES_LOG = new BlockLog.EnumAxis[EnumFacing.Axis.values().length][];
     private static final BlockQuartz.EnumType[][] AXISES_QUARTZ = new BlockQuartz.EnumType[EnumFacing.Axis.values().length][];
+    private static final BlockRailBase.EnumRailDirection[][] RAIL_SHAPES = new BlockRailBase.EnumRailDirection[EnumFacing.VALUES.length][];
 
     public boolean rotate(final SchematicWorld world, final EnumFacing axis, final boolean forced) {
         if (world == null) {
@@ -200,6 +202,17 @@ public class RotationHelper {
             }
         }
 
+        final IProperty propertyShape = BlockStateHelper.getProperty(blockState, "shape");
+        if (propertyShape instanceof PropertyEnum) {
+            if (BlockRailBase.EnumRailDirection.class.isAssignableFrom(propertyShape.getValueClass())) {
+                final BlockRailBase.EnumRailDirection shape = (BlockRailBase.EnumRailDirection) blockState.getValue(propertyShape);
+                final BlockRailBase.EnumRailDirection shapeRotated = getRotatedRailDirection(axisRotation, shape);
+                if (propertyShape.getAllowedValues().contains(shapeRotated)) {
+                    return blockState.withProperty(propertyShape, shapeRotated);
+                }
+            }
+        }
+
         if (!forced && (propertyFacing != null || propertyAxis != null)) {
             throw new RotationException("'%s' cannot be rotated around '%s'", BLOCK_REGISTRY.getNameForObject(blockState.getBlock()), axisRotation);
         }
@@ -221,6 +234,10 @@ public class RotationHelper {
 
     private static BlockQuartz.EnumType getRotatedQuartzType(final EnumFacing source, final BlockQuartz.EnumType type) {
         return AXISES_QUARTZ[source.getAxis().ordinal()][type.ordinal()];
+    }
+
+    private static BlockRailBase.EnumRailDirection getRotatedRailDirection(final EnumFacing source, final BlockRailBase.EnumRailDirection shape) {
+        return RAIL_SHAPES[source.ordinal()][shape.getMetadata()];
     }
 
     private static BlockLever.EnumOrientation getRotatedLeverFacing(final EnumFacing source, final BlockLever.EnumOrientation side) {
@@ -296,6 +313,35 @@ public class RotationHelper {
                 BlockQuartz.EnumType.LINES_Y,
                 BlockQuartz.EnumType.LINES_Z
         };
+
+        RAIL_SHAPES[EnumFacing.DOWN.ordinal()] = new BlockRailBase.EnumRailDirection[] {
+                BlockRailBase.EnumRailDirection.EAST_WEST,
+                BlockRailBase.EnumRailDirection.NORTH_SOUTH,
+                BlockRailBase.EnumRailDirection.ASCENDING_NORTH,
+                BlockRailBase.EnumRailDirection.ASCENDING_SOUTH,
+                BlockRailBase.EnumRailDirection.ASCENDING_WEST,
+                BlockRailBase.EnumRailDirection.ASCENDING_EAST,
+                BlockRailBase.EnumRailDirection.NORTH_EAST,
+                BlockRailBase.EnumRailDirection.SOUTH_EAST,
+                BlockRailBase.EnumRailDirection.SOUTH_WEST,
+                BlockRailBase.EnumRailDirection.NORTH_WEST
+        };
+        RAIL_SHAPES[EnumFacing.UP.ordinal()] = new BlockRailBase.EnumRailDirection[] {
+                BlockRailBase.EnumRailDirection.EAST_WEST,
+                BlockRailBase.EnumRailDirection.NORTH_SOUTH,
+                BlockRailBase.EnumRailDirection.ASCENDING_SOUTH,
+                BlockRailBase.EnumRailDirection.ASCENDING_NORTH,
+                BlockRailBase.EnumRailDirection.ASCENDING_EAST,
+                BlockRailBase.EnumRailDirection.ASCENDING_WEST,
+                BlockRailBase.EnumRailDirection.SOUTH_WEST,
+                BlockRailBase.EnumRailDirection.NORTH_WEST,
+                BlockRailBase.EnumRailDirection.NORTH_EAST,
+                BlockRailBase.EnumRailDirection.SOUTH_EAST
+        };
+        RAIL_SHAPES[EnumFacing.NORTH.ordinal()] = BlockRailBase.EnumRailDirection.values();
+        RAIL_SHAPES[EnumFacing.SOUTH.ordinal()] = BlockRailBase.EnumRailDirection.values();
+        RAIL_SHAPES[EnumFacing.WEST.ordinal()] = BlockRailBase.EnumRailDirection.values();
+        RAIL_SHAPES[EnumFacing.EAST.ordinal()] = BlockRailBase.EnumRailDirection.values();
     }
 
     public static class RotationException extends Exception {
