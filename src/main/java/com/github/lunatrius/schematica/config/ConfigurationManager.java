@@ -24,9 +24,15 @@ public final class ConfigurationManager {
     public static void init(final File configFile) {
         final String filePath = configFile.getPath();
         if (!filePath.endsWith(".json")) {
-            file = new File(filePath.replaceAll("\\.(.+)$", ".json"));
-        }
-        else {
+            // 只替换最后一个扩展名，避免影响目录名（如 .minecraft）
+            int lastDot = filePath.lastIndexOf('.');
+            int lastSep = Math.max(filePath.lastIndexOf('/'), filePath.lastIndexOf('\\'));
+            if (lastDot > lastSep) {
+                file = new File(filePath.substring(0, lastDot) + ".json");
+            } else {
+                file = new File(filePath + ".json");
+            }
+        } else {
             file = configFile;
         }
 
