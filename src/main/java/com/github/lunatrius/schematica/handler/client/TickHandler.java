@@ -1,6 +1,7 @@
 package com.github.lunatrius.schematica.handler.client;
 
 import com.github.lunatrius.schematica.Schematica;
+import com.github.lunatrius.schematica.client.persistence.SchematicPersistenceManager;
 import com.github.lunatrius.schematica.client.printer.SchematicPrinter;
 import com.github.lunatrius.schematica.client.world.SchematicWorld;
 import com.github.lunatrius.schematica.config.Configuration;
@@ -32,6 +33,7 @@ public class TickHandler {
 
     @SubscribeEvent
     public void onClientDisconnect(final FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+        SchematicPersistenceManager.resetState();
         if (!Configuration.general.persistSchematic.getValue()) {
             Reference.logger.info("Scheduling client settings reset.");
             ClientProxy.isPendingReset = true;
@@ -48,6 +50,11 @@ public class TickHandler {
         final WorldClient world = this.minecraft.theWorld;
         final EntityPlayerSP player = this.minecraft.thePlayer;
         final SchematicWorld schematic = ClientProxy.schematic;
+
+        if (world != null && player != null && schematic == null) {
+            SchematicPersistenceManager.maybeAutoLoad();
+        }
+
         if (world != null && player != null && schematic != null && schematic.isRendering) {
             this.minecraft.mcProfiler.startSection("printer");
             final SchematicPrinter printer = SchematicPrinter.INSTANCE;

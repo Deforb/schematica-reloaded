@@ -3,6 +3,7 @@ package com.github.lunatrius.schematica.proxy;
 import com.github.lunatrius.core.util.math.MBlockPos;
 import com.github.lunatrius.core.util.vector.Vector3d;
 import com.github.lunatrius.schematica.api.ISchematic;
+import com.github.lunatrius.schematica.client.persistence.SchematicPersistenceManager;
 import com.github.lunatrius.schematica.client.printer.SchematicPrinter;
 import com.github.lunatrius.schematica.client.renderer.RenderSchematic;
 import com.github.lunatrius.schematica.client.world.SchematicWorld;
@@ -228,6 +229,8 @@ public class ClientProxy extends CommonProxy {
         RenderSchematic.INSTANCE.setWorldAndLoadRenderers(world);
         SchematicPrinter.INSTANCE.setSchematic(world);
         world.isRendering = true;
+
+        SchematicPersistenceManager.recordLoadedSchematic(new File(directory, filename));
 
         return true;
     }
